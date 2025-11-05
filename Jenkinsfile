@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "sreedocker123/nodejsdockerdemo"
-        DOCKER_CREDENTIALS = "sreedockerhub"
+        DOCKER_IMAGE = "meghanajshetty/nodejsdockerdemo"
+        DOCKER_CREDENTIALS = "Docker_credential2"
+        CONTAINER_NAME ="nodejscontainer"
     }
 
     stages {
@@ -48,6 +49,22 @@ pipeline {
                 }
             }
         }
+        
+        stage('Remove Docker Container') {
+            steps {
+                script {
+                    sh "docker rm -f ${CONTAINER_NAME} || true"
+                }
+            }
+        }
+        stage('EXpose Docker Container') {
+            steps {
+                script {
+                    sh "docker run --name ${CONTAINER_NAME} -it -d -p 3019:3000 ${DOCKER_IMAGE}:${BUILD_NUMBER} "
+                }
+            }
+        }
+        
     }
 
     post {
